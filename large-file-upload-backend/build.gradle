@@ -1,7 +1,8 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.5.0'
+	id 'org.springframework.boot' version '3.5.4'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.owasp.dependencycheck' version '8.4.2'
 }
 
 group = 'com.example'
@@ -27,4 +28,10 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+dependencyCheck {
+	failBuildOnCVSS = 7
+	formats = ['HTML', 'JSON']
+	outputDirectory = "${buildDir}/reports/dependency-check"
 }
