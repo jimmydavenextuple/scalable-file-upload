@@ -25,10 +25,11 @@ public class UploadController {
             @RequestParam("uploadId") String uploadId,
             @RequestParam("chunkIndex") int chunkIndex,
             @RequestParam("totalChunks") long totalChunks,
-            @RequestParam("fileName") String fileName
+            @RequestParam("fileName") String fileName,
+            @RequestParam(value = "description", required = false) String description
     ) {
         try {
-            service.saveChunk(file, uploadId, chunkIndex, totalChunks, fileName);
+            service.saveChunk(file, uploadId, chunkIndex, totalChunks, fileName, description);
             return ResponseEntity.ok("Chunk uploaded");
         } catch (IOException e) {
             e.printStackTrace();

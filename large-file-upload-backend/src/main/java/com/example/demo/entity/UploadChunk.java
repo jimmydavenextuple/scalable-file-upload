@@ -14,6 +14,7 @@ public class UploadChunk {
     private boolean uploaded;
     private String fileName;
     private long totalChunks;
+    private String description;
 
     public Long getId() {
         return id;
@@ -61,6 +62,14 @@ public class UploadChunk {
 
     public void setTotalChunks(long totalChunks) {
         this.totalChunks = totalChunks;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
 
