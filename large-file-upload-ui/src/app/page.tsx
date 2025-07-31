@@ -10,6 +10,7 @@ export default function UploadPage() {
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
+  const [description, setDescription] = useState('');
   const inputRef = useRef(null);
 
   const handleFileChange = (e) => {
@@ -24,6 +25,7 @@ export default function UploadPage() {
     formData.append("uploadId", fileId);
     formData.append("fileName", filename);
     formData.append("totalChunks", totalChunks);
+    formData.append("description", description);
 
     await fetch("http://localhost:8080/upload/chunk", {
       method: "POST",
@@ -40,8 +42,9 @@ export default function UploadPage() {
   const getPendingChunks = async (uploadId: string): Promise<number[]> => {
     try {
       const res = await fetch(`http://localhost:8080/upload/pending-chunks/${uploadId}`);
-      console.log(res.data);
-      return res.data?.pendingChunks;
+      const data = await res.json();
+      console.log(data);
+      return data?.pendingChunks || [];
     } catch (err) {
       console.error("Error fetching pending chunks", err);
       return [];
@@ -58,8 +61,8 @@ export default function UploadPage() {
     let pendingChunks = await getPendingChunks(fileId);
     console.log(pendingChunks);
 
-    if(pendingChunks === undefined || pendingChunks === 0) {
-      pendingChunks = totalChunks;
+    if(pendingChunks === undefined || pendingChunks.length === 0) {
+      pendingChunks = Array.from({length: totalChunks}, (_, i) => i);
     }
 
     for (const chunkIndex of pendingChunks) {
@@ -82,6 +85,13 @@ export default function UploadPage() {
         type="file"
         onChange={handleFileChange}
         className="mb-4"
+      />
+      <textarea
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder="Enter file description"
+        className="mb-4 p-2 border border-gray-300 rounded w-full max-w-md"
+        rows={3}
       />
       <Button onClick={handleUpload} disabled={!file || uploading}>
         {uploading ? "Uploading..." : "Start Upload"}

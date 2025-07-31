@@ -26,18 +26,14 @@ public class UploadService {
     @Autowired
     private UploadChunkRepository repository;
 
-    public void saveChunk(MultipartFile file, String uploadId, int chunkIndex, long totalChunks, String fileName) throws IOException {
+    public void saveChunk(MultipartFile file, String uploadId, int chunkIndex, long totalChunks, String fileName, String description) throws IOException {
         var existing = repository.findByUploadIdAndChunkIndex(uploadId, chunkIndex);
         if (existing.isPresent() && existing.get().isUploaded()) return;
 
         // Save to local or AWS S3
-        Path uploadDir = Paths.get("/home/james/jimmy-workspace/large-file-upload-backend/src/main/resources/uploads");
+        Path uploadDir = Paths.get(System.getProperty("user.dir"), "src/main/resources/uploads");
         if (!Files.exists(uploadDir)) {
             Files.createDirectories(uploadDir);
-        }
-
-        if(chunkIndex == 4) {
-            throw new FileNotFoundException("");
         }
 
         // Target file path (all chunks go here)
@@ -55,6 +51,7 @@ public class UploadService {
         chunk.setUploaded(true);
         chunk.setFileName(fileName);
         chunk.setTotalChunks(totalChunks);
+        chunk.setDescription(description);
 
         repository.save(chunk);
     }
