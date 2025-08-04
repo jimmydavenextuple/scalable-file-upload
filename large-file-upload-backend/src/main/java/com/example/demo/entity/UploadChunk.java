@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "upload_chunk")
@@ -14,6 +15,8 @@ public class UploadChunk {
     private boolean uploaded;
     private String fileName;
     private long totalChunks;
+    
+    @NotBlank(message = "Description can not be null")
     private String description;
 
     public Long getId() {

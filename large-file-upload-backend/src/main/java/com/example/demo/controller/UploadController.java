@@ -26,11 +26,16 @@ public class UploadController {
             @RequestParam("chunkIndex") int chunkIndex,
             @RequestParam("totalChunks") long totalChunks,
             @RequestParam("fileName") String fileName,
-            @RequestParam(value = "description", required = false) String description
+            @RequestParam(value = "description", required = true) String description
     ) {
         try {
+            if (description == null || description.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Description can not be null"));
+            }
             service.saveChunk(file, uploadId, chunkIndex, totalChunks, fileName, description);
             return ResponseEntity.ok("Chunk uploaded");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed");
