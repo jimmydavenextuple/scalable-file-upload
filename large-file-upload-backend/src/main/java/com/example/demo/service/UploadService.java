@@ -27,6 +27,10 @@ public class UploadService {
     private UploadChunkRepository repository;
 
     public void saveChunk(MultipartFile file, String uploadId, int chunkIndex, long totalChunks, String fileName, String description) throws IOException {
+        if (description == null || description.trim().isEmpty()) {
+            throw new IllegalArgumentException("Description can not be null");
+        }
+        
         var existing = repository.findByUploadIdAndChunkIndex(uploadId, chunkIndex);
         if (existing.isPresent() && existing.get().isUploaded()) return;
 
